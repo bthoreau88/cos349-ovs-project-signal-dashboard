@@ -45,8 +45,8 @@ npm test
 
 - [x] App runs locally
 - [x] Screenshot saved in `docs/screenshots/`
-- [ ] GitHub repo created
-- [ ] Multiple commits made
+- [x] GitHub repo created
+- [x] Multiple commits made
 - [ ] Trello board updated
 - [ ] Milestone video recorded
 - [ ] Self-reflection completed
