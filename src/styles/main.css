@@ -1,0 +1,189 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #181713;
+  background: #f3efe4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(94, 105, 77, 0.18), transparent 36rem), #f3efe4;
+}
+
+button { font: inherit; }
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 56px 0;
+}
+
+.header {
+  border-bottom: 1px solid rgba(24, 23, 19, 0.22);
+  padding-bottom: 32px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: #687154;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(2.4rem, 7vw, 5.8rem);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+.header-copy {
+  max-width: 700px;
+  margin: 24px 0 0;
+  color: #575246;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.filter-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid rgba(24, 23, 19, 0.16);
+  background: rgba(255, 252, 242, 0.62);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.filter-panel span {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.76rem;
+  color: #575246;
+}
+
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.filter-buttons button {
+  border: 1px solid rgba(24, 23, 19, 0.24);
+  background: transparent;
+  color: #181713;
+  padding: 9px 13px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.filter-buttons button.active,
+.filter-buttons button:hover {
+  background: #181713;
+  color: #f3efe4;
+}
+
+.dashboard { display: grid; gap: 24px; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+
+.metric-card {
+  border: 1px solid rgba(24, 23, 19, 0.16);
+  background: rgba(255, 252, 242, 0.68);
+  padding: 20px;
+}
+
+.metric-card span {
+  display: block;
+  margin-bottom: 14px;
+  color: #686152;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.metric-card strong { font-size: 2.6rem; line-height: 1; }
+.metric-card.warning strong { color: #6d2f25; }
+.project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  border: 1px solid rgba(24, 23, 19, 0.18);
+  background: rgba(255, 252, 242, 0.82);
+  padding: 22px;
+}
+
+.project-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.project-type {
+  color: #687154;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.status-pill {
+  border: 1px solid rgba(24, 23, 19, 0.18);
+  padding: 6px 9px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.status-pill.active { background: #181713; color: #f3efe4; }
+.status-pill.planning { background: #ded4bd; }
+.status-pill.research { background: #d4dac9; }
+
+.project-card h2 {
+  margin: 0 0 12px;
+  font-size: 1.45rem;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.project-card p { margin: 0 0 20px; color: #575246; line-height: 1.6; }
+
+.project-meta {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+  margin-bottom: 22px;
+  color: #37342c;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.progress-section { display: grid; gap: 8px; margin-top: 14px; }
+.progress-label { display: flex; justify-content: space-between; gap: 12px; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.progress-track { height: 10px; border: 1px solid rgba(24, 23, 19, 0.2); background: rgba(24, 23, 19, 0.08); overflow: hidden; }
+.progress-fill { height: 100%; background: #181713; }
+.progress-fill.secondary { background: #687154; }
+
+.reflection-panel { margin-top: 24px; border-top: 1px solid rgba(24, 23, 19, 0.22); padding-top: 28px; }
+.reflection-panel h2 { margin: 0 0 12px; text-transform: uppercase; letter-spacing: -0.04em; }
+.reflection-panel p:last-child { max-width: 820px; margin: 0; color: #575246; line-height: 1.7; }
+
+@media (max-width: 900px) {
+  .metrics-grid, .project-grid { grid-template-columns: 1fr; }
+  .filter-panel { align-items: flex-start; flex-direction: column; }
+}
