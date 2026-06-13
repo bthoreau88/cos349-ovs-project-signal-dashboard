@@ -51,7 +51,9 @@ public class FeedbackService : IFeedbackService
         var total = 0;
         foreach (var filler in FillerWords)
         {
-            var pattern = $@"{Regex.Escape(filler)}";
+            // Match whole words only so substrings do not count
+            // (e.g. "like" must not match inside "likely" or "unlike").
+            var pattern = $@"\b{Regex.Escape(filler)}\b";
             total += Regex.Matches(text, pattern, RegexOptions.IgnoreCase).Count;
         }
         return total;
