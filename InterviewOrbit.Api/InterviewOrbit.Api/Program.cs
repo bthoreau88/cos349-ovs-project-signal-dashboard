@@ -35,6 +35,16 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<InterviewOrbitDbContext>();
+
+    // Run with "--reset-db" (e.g. `dotnet run -- --reset-db`) to wipe the
+    // database and rebuild it from a clean seed. This clears any junk rows
+    // left over from early testing. Without the flag, the DB is created if
+    // missing and seeded only when empty.
+    if (args.Contains("--reset-db"))
+    {
+        db.Database.EnsureDeleted();
+    }
+
     db.Database.EnsureCreated();
     SeedData.Initialize(db);
 }

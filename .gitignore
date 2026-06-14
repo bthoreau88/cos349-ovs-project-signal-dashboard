@@ -4,3 +4,9 @@ obj/
 .vs/
 dist/
 *.tsbuildinfo
+
+# SQLite database is generated/seeded at runtime, not committed
+*.db
+*.db-shm
+*.db-wal
+*.sqbpro

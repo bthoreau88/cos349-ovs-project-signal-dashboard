@@ -43,6 +43,16 @@ The direction, review, and final choices on this project are mine.
   live microphone test in Chrome/Edge on my machine, since the Web Speech API needs a
   real browser and is best supported there.
 
+### Database seed and reset
+- What I asked for: help adding a clean way to reset my SQLite database and stop
+  committing the database file to the repo.
+- What I decided / reviewed: I added a `--reset-db` startup flag that deletes and
+  rebuilds the database from a clean seed, so junk rows from early testing can be
+  cleared on demand. I also stopped tracking the generated `.db` files in git, since
+  the database should be created at runtime, not committed.
+- How I verified: I run `dotnet run -- --reset-db` locally and confirm the database
+  comes back with only the clean seed data.
+
 ## Notes
 - The demo-transcript fallback stays in place on purpose so a flaky recognizer or an
   offline network can never block a demo.
