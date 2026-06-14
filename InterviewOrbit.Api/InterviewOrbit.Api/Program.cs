@@ -18,20 +18,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("dev", policy =>
     {
+        // Frontend runs on a single pinned Vite port (see vite.config.ts),
+        // so the allowed origin is fixed instead of guessing a range.
         policy
-            .WithOrigins(
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://localhost:5175",
-                "http://localhost:5176",
-                "http://localhost:5177",
-                "http://localhost:5178",
-                "http://localhost:5179",
-                "http://localhost:5180",
-                "http://localhost:5181",
-                "http://localhost:5182",
-                "http://localhost:5185"
-            )
+            .WithOrigins("http://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Prompt } from "../../prompts/types/prompt";
+import type { PromptDto } from "../../prompts/services/promptsApi";
 import { useRecorder } from "../hooks/useRecorder";
 import { transcribeAudio } from "../../transcript/services/transcriptionApi";
 import { TranscriptPanel } from "../../transcript/components/TranscriptPanel";
@@ -8,66 +8,102 @@ import { analyzeFeedback } from "../../feedback/services/feedbackApi";
 import type { FeedbackResponse } from "../../feedback/types/feedback";
 import { FeedbackSummaryCard } from "../../feedback/components/FeedbackSummaryCard";
 import { createSession } from "../../sessions/services/sessionsApi";
+
 type Props = {
-    selectedPrompt: Prompt | null;
+    selectedPrompt: PromptDto | null;
 };
+
 export function RecordingPanel({ selectedPrompt }: Props) {
     const {
-        recordingState,
+        isRecording,
         durationSeconds,
-        errorMessage,
         audioUrl,
+        error: recorderError,
         startRecording,
         stopRecording,
-        reset
+        resetRecording,
     } = useRecorder();
+
     const [transcriptResult, setTranscriptResult] = useState<TranscriptResponse | null>(null);
     const [transcriptError, setTranscriptError] = useState("");
+    const [isProcessing, setIsProcessing] = useState(false);
     const [feedback, setFeedback] = useState<FeedbackResponse | null>(null);
     const [feedbackLoading, setFeedbackLoading] = useState(false);
     const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
     const [saveError, setSaveError] = useState("");
-    const canStart =
-        !!selectedPrompt &&
-        (recordingState === "idle" || recordingState === "done" || recordingState === "error");
-    const canStop = recordingState === "recording";
-    async function handleStart() {
+
+    // The recorder hook exposes simple booleans; derive a display status from them.
+    const status = isRecording
+        ? "Recording"
+        : isProcessing
+            ? "Processing"
+            : transcriptResult
+                ? "Done"
+                : "Idle";
+
+    const canStart = !!selectedPrompt && !isRecording && !isProcessing;
+    const canStop = isRecording;
+
+    function clearResults() {
         setTranscriptResult(null);
         setTranscriptError("");
         setFeedback(null);
+        setFeedbackLoading(false);
         setSaveState("idle");
         setSaveError("");
-        reset();
+    }
+
+    async function handleStart() {
+        clearResults();
         await startRecording();
     }
+
     async function handleStop() {
         setTranscriptError("");
         setFeedback(null);
         setSaveError("");
+        setIsProcessing(true);
+
         try {
             const result = await stopRecording();
             if (!result) {
                 setTranscriptError("No recording was captured.");
                 return;
             }
-            const transcript = await transcribeAudio(result.blob, result.durationSeconds, result.mimeType);
+
+            const transcript = await transcribeAudio(
+                result.blob,
+                result.durationSeconds,
+                result.mimeType
+            );
             setTranscriptResult(transcript);
+
             setFeedbackLoading(true);
             const feedbackResponse = await analyzeFeedback({
                 transcriptText: transcript.transcriptText,
                 durationSeconds: result.durationSeconds,
                 targetAnswerLengthSeconds: selectedPrompt?.suggestedTargetSeconds,
-                targetKeywords: selectedPrompt?.targetKeywords ?? []
+                targetKeywords: selectedPrompt?.targetKeywords ?? [],
             });
             setFeedback(feedbackResponse);
         } catch {
-            setTranscriptError("Processing failed. Keep the manual transcript fallback in scope for the final MVP.");
+            setTranscriptError(
+                "Processing failed. Keep the manual transcript fallback in scope for the final MVP."
+            );
         } finally {
+            setIsProcessing(false);
             setFeedbackLoading(false);
         }
     }
+
+    function handleReset() {
+        resetRecording();
+        clearResults();
+    }
+
     async function handleSaveSession() {
         if (!selectedPrompt || !transcriptResult || !feedback) return;
+
         try {
             setSaveState("saving");
             setSaveError("");
@@ -78,7 +114,7 @@ export function RecordingPanel({ selectedPrompt }: Props) {
                 roleSnapshot: selectedPrompt.role,
                 transcriptText: transcriptResult.transcriptText,
                 durationSeconds,
-                feedback
+                feedback,
             });
             setSaveState("saved");
         } catch {
@@ -86,42 +122,41 @@ export function RecordingPanel({ selectedPrompt }: Props) {
             setSaveError("Could not save the session.");
         }
     }
+
     return (
         <div className="stack-sm">
             <div className="recording-status-card">
                 <p><strong>Prompt:</strong> {selectedPrompt ? selectedPrompt.title : "Select a prompt first"}</p>
-                <p><strong>Status:</strong> {recordingState}</p>
+                <p><strong>Status:</strong> {status}</p>
                 <p><strong>Duration:</strong> {durationSeconds}s</p>
             </div>
+
             <div className="row wrap">
                 <button type="button" onClick={handleStart} disabled={!canStart}>
-                    {recordingState === "recording" ? "Recording..." : "Start recording"}
+                    {isRecording ? "Recording..." : "Start recording"}
                 </button>
                 <button type="button" onClick={handleStop} disabled={!canStop}>
                     Stop recording
                 </button>
-                <button type="button" onClick={() => {
-                    reset();
-                    setTranscriptResult(null);
-                    setTranscriptError("");
-                    setFeedback(null);
-                    setSaveError("");
-                    setSaveState("idle");
-                }}>
+                <button type="button" onClick={handleReset}>
                     Reset
                 </button>
             </div>
-            {errorMessage && <p className="error-text">{errorMessage}</p>}
+
+            {recorderError && <p className="error-text">{recorderError}</p>}
             {transcriptError && <p className="error-text">{transcriptError}</p>}
+
             {audioUrl && (
                 <div className="stack-sm">
                     <strong>Audio preview</strong>
                     <audio controls src={audioUrl} />
                 </div>
             )}
-            {recordingState === "processing" && (
-                <div className="processing-box">Processing audio and generating transcript…</div>
+
+            {isProcessing && (
+                <div className="processing-box">Processing audio and generating transcript...</div>
             )}
+
             {transcriptResult && (
                 <TranscriptPanel
                     transcript={transcriptResult.transcriptText}
@@ -129,11 +164,17 @@ export function RecordingPanel({ selectedPrompt }: Props) {
                     usedFallback={transcriptResult.usedFallback}
                 />
             )}
+
             <FeedbackSummaryCard feedback={feedback} isLoading={feedbackLoading} />
+
             {feedback && (
                 <div className="stack-sm">
                     <button type="button" onClick={handleSaveSession} disabled={saveState === "saving"}>
-                        {saveState === "saving" ? "Saving..." : saveState === "saved" ? "Saved to history" : "Save session"}
+                        {saveState === "saving"
+                            ? "Saving..."
+                            : saveState === "saved"
+                                ? "Saved to history"
+                                : "Save session"}
                     </button>
                     {saveError && <p className="error-text">{saveError}</p>}
                 </div>

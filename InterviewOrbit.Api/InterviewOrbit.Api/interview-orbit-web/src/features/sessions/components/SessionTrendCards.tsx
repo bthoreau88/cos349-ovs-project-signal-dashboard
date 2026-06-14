@@ -10,7 +10,7 @@ export function SessionTrendCards({
     error = ""
 }: Props) {
     if (isLoading) {
-        return <div className="processing-box">Loading trends…</div>;
+        return <div className="processing-box">Loading trends...</div>;
     }
     if (error) {
         return <p className="error-text">{error}</p>;

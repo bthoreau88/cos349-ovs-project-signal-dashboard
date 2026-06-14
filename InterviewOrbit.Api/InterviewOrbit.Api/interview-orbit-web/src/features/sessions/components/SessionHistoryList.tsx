@@ -10,7 +10,7 @@ export function SessionHistoryList({
     error = ""
 }: Props) {
     if (isLoading) {
-        return <div className="processing-box">Loading session history…</div>;
+        return <div className="processing-box">Loading session history...</div>;
     }
     if (error) {
         return <p className="error-text">{error}</p>;
@@ -28,11 +28,11 @@ export function SessionHistoryList({
                         <span className="badge muted">{session.roleSnapshot}</span>
                     </div>
                     <p className="history-meta">
-                        Duration: {session.durationSeconds}s • Filler words: {session.feedback.fillerWordCount} • Pacing: {session.feedback.pacingLabel}
+                        Duration: {session.durationSeconds}s - Filler words: {session.feedback.fillerWordCount} - Pacing: {session.feedback.pacingLabel}
                     </p>
                     <p className="history-transcript">
                         {session.transcriptText.length > 180
-                            ? `${session.transcriptText.slice(0, 180)}…`
+                            ? `${session.transcriptText.slice(0, 180)}...`
                             : session.transcriptText}
                     </p>
                     <p className="history-suggestion">

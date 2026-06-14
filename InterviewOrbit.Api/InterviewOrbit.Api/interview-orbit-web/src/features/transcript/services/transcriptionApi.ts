@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../../services/apiClient";
 import type { TranscriptResponse } from "../types/transcript";
 
 export async function transcribeAudio(
@@ -11,7 +12,9 @@ export async function transcribeAudio(
     formData.append("audio", audioBlob, `answer.${extension}`);
     formData.append("durationSeconds", String(durationSeconds));
 
-    const response = await fetch("http://localhost:5158/api/transcription", {
+    // Use raw fetch (not the axios client) so the browser sets the correct
+    // multipart/form-data boundary, but share the same configured base URL.
+    const response = await fetch(`${API_BASE_URL}/api/transcription`, {
         method: "POST",
         body: formData,
     });
