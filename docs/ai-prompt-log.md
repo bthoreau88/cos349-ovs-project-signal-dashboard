@@ -30,8 +30,21 @@ The direction, review, and final choices on this project are mine.
 - How I verified: I ran `npm run build` and confirmed a clean type-check and a
   successful production build.
 
+### Real speech-to-text
+- What I asked for: help wiring real speech-to-text into the recording flow using the
+  browser Web Speech API, while keeping my existing backend transcript path as a
+  documented fallback.
+- What I decided / reviewed: I chose the Web Speech API because it is free, needs no
+  backend key, and is the recommended student path. I had it run live while recording,
+  then on stop the app uses the spoken transcript if one was captured, and otherwise
+  falls back to the backend endpoint. Both paths return the same transcript shape, and
+  the UI labels which source was used ("web-speech" vs the demo fallback).
+- How I verified: I ran `npm run build` for a clean type-check and build. I will do the
+  live microphone test in Chrome/Edge on my machine, since the Web Speech API needs a
+  real browser and is best supported there.
+
 ## Notes
-- I am intentionally keeping the demo-transcript fallback in place until I wire up
-  real speech-to-text, which is my next M1 task.
+- The demo-transcript fallback stays in place on purpose so a flaky recognizer or an
+  offline network can never block a demo.
 - I kept scope on the core record -> feedback -> track loop and did not add features
   outside of it.

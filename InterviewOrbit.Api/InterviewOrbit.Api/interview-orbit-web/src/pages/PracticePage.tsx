@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getPrompts, type PromptDto } from "../features/prompts/services/promptsApi";
 import { useRecorder } from "../features/recording/hooks/useRecorder";
-import { transcribeAudio } from "../features/transcript/services/transcriptionApi";
+import { useSpeechRecognition } from "../features/recording/hooks/useSpeechRecognition";
+import { resolveTranscript } from "../features/transcript/services/transcriptionApi";
 import type { TranscriptResponse } from "../features/transcript/types/transcript";
 import { analyzeFeedback } from "../features/feedback/services/feedbackApi";
 import type { FeedbackResponse } from "../features/feedback/types/feedback";
@@ -33,6 +34,10 @@ export default function PracticePage() {
         stopRecording,
         resetRecording,
     } = useRecorder();
+
+    // Real in-browser speech-to-text. Falls back to the backend transcript
+    // path when the browser does not support the Web Speech API.
+    const speech = useSpeechRecognition();
 
     useEffect(() => {
         async function loadPrompts() {
@@ -69,6 +74,9 @@ export default function PracticePage() {
         setSaveState("idle");
         setSaveError("");
 
+        if (speech.supported) {
+            speech.start();
+        }
         await startRecording();
     }
 
@@ -82,17 +90,19 @@ export default function PracticePage() {
 
         try {
             const recordingResult = await stopRecording();
+            const liveTranscript = speech.supported ? await speech.stop() : "";
 
             if (!recordingResult) {
                 setTranscriptError("No audio was captured.");
                 return;
             }
 
-            const transcript = await transcribeAudio(
-                recordingResult.blob,
-                recordingResult.durationSeconds,
-                recordingResult.mimeType
-            );
+            const transcript = await resolveTranscript({
+                liveTranscript,
+                audioBlob: recordingResult.blob,
+                durationSeconds: recordingResult.durationSeconds,
+                mimeType: recordingResult.mimeType,
+            });
 
             setTranscriptResult(transcript);
             setIsTranscribing(false);
@@ -124,6 +134,7 @@ export default function PracticePage() {
 
     function handleReset() {
         resetRecording();
+        speech.reset();
         setTranscriptResult(null);
         setTranscriptError("");
         setFeedback(null);
