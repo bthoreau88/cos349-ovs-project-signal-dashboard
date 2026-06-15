@@ -53,6 +53,15 @@ The direction, review, and final choices on this project are mine.
 - How I verified: I run `dotnet run -- --reset-db` locally and confirm the database
   comes back with only the clean seed data.
 
+### Expanded prompt library
+- What I asked for: help adding more interview prompts so there is real variety to
+  practice against.
+- What I decided / reviewed: I added prompts across Behavioral, Frontend, Backend,
+  Leadership, and General categories, each with its own target keywords and suggested
+  length, keeping the same data shape as my existing seed.
+- How I verified: I reset the database and confirmed the new prompts load in the
+  prompt picker.
+
 ## Notes
 - The demo-transcript fallback stays in place on purpose so a flaky recognizer or an
   offline network can never block a demo.
