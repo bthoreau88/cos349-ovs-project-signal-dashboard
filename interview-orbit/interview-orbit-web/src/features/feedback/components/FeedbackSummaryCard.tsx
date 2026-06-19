@@ -6,6 +6,16 @@ type Props = {
   error?: string;
 };
 
+function pacingClass(label: string): string {
+  return label === "Balanced" ? "metric-good" : "metric-warn";
+}
+
+function fillerClass(count: number): string {
+  if (count <= 2) return "metric-good";
+  if (count <= 5) return "metric-warn";
+  return "metric-bad";
+}
+
 export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }: Props) {
   if (isLoading) return <div className="processing-box">Analyzing transcript...</div>;
   if (error) return <p className="error-text">{error}</p>;
@@ -16,11 +26,16 @@ export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }:
       <div className="grid two">
         <div className="section-card">
           <h3>Filler words</h3>
-          <p>{feedback.fillerWordCount}</p>
+          <p className={`metric-value ${fillerClass(feedback.fillerWordCount)}`}>
+            {feedback.fillerWordCount}
+          </p>
         </div>
         <div className="section-card">
           <h3>Pacing</h3>
-          <p>{feedback.pacingLabel} &bull; {feedback.wordsPerMinuteEstimate} WPM</p>
+          <p className={`metric-value ${pacingClass(feedback.pacingLabel)}`}>
+            {feedback.pacingLabel}
+          </p>
+          <p className="metric-sub">{feedback.wordsPerMinuteEstimate} WPM</p>
         </div>
       </div>
       <div className="section-card">

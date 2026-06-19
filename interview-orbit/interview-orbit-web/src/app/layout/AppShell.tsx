@@ -7,7 +7,7 @@ export function AppShell({ children }: PropsWithChildren) {
       <header className="app-header">
         <div>
           <Link to="/" className="brand">Interview Orbit</Link>
-          <p className="brand-subtitle">Practice one answer. Review it clearly.</p>
+          <p className="brand-subtitle">Mock interview practice tool</p>
         </div>
         <nav className="nav">
           <NavLink to="/">Dashboard</NavLink>

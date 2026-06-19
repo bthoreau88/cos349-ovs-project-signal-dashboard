@@ -7,10 +7,13 @@ type Props = {
   onChange: (prompt: Prompt) => void;
 };
 
+const ALL = "All";
+
 export function PromptPicker({ value, onChange }: Props) {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>(ALL);
 
   useEffect(() => {
     getPrompts()
@@ -19,12 +22,29 @@ export function PromptPicker({ value, onChange }: Props) {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Loading prompts...</p>;
+  if (loading) return <div className="processing-box">Loading prompts...</div>;
   if (error) return <p className="error-text">{error}</p>;
+
+  const categories = [ALL, ...Array.from(new Set(prompts.map((p) => p.category)))];
+  const visible = activeCategory === ALL
+    ? prompts
+    : prompts.filter((p) => p.category === activeCategory);
 
   return (
     <div className="stack-sm">
-      {prompts.map((prompt) => (
+      <div className="tab-bar">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={activeCategory === cat ? "tab-btn active" : "tab-btn"}
+            onClick={() => setActiveCategory(cat)}
+            type="button"
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+      {visible.map((prompt) => (
         <button
           key={prompt.id}
           className={value?.id === prompt.id ? "prompt-item selected" : "prompt-item"}

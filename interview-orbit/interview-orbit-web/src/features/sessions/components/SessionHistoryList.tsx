@@ -6,10 +6,30 @@ type Props = {
   error?: string;
 };
 
+function formatDuration(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return s === 0 ? `${m}m` : `${m}m ${s}s`;
+}
+
+function formatDate(utcString: string): string {
+  return new Date(utcString).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export function SessionHistoryList({ sessions, isLoading = false, error = "" }: Props) {
   if (isLoading) return <div className="processing-box">Loading session history...</div>;
   if (error) return <p className="error-text">{error}</p>;
-  if (sessions.length === 0) return <p>No saved sessions yet.</p>;
+  if (sessions.length === 0) return (
+    <div className="empty-state">
+      <p>No sessions recorded yet — go to Practice to record your first answer.</p>
+    </div>
+  );
 
   return (
     <div className="stack-sm">
@@ -19,9 +39,10 @@ export function SessionHistoryList({ sessions, isLoading = false, error = "" }: 
             <strong>{session.promptTitleSnapshot}</strong>
             <span className="badge">{session.categorySnapshot}</span>
             <span className="badge muted">{session.roleSnapshot}</span>
+            <span className="badge muted history-date">{formatDate(session.createdAtUtc)}</span>
           </div>
           <p className="history-meta">
-            Duration: {session.durationSeconds}s &bull; Filler words: {session.feedback.fillerWordCount} &bull; Pacing: {session.feedback.pacingLabel}
+            Duration: {formatDuration(session.durationSeconds)} &bull; Filler words: {session.feedback.fillerWordCount} &bull; Pacing: {session.feedback.pacingLabel} &bull; {session.feedback.wordsPerMinuteEstimate} WPM
           </p>
           <p className="history-transcript">
             {session.transcriptText.length > 180
