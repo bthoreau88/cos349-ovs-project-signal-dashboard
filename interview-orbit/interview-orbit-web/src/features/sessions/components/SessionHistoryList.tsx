@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { confidenceScore } from "../../feedback/components/FeedbackSummaryCard";
 import type { InterviewSession } from "../types/session";
 
 type Props = {
@@ -27,7 +29,8 @@ export function SessionHistoryList({ sessions, isLoading = false, error = "" }: 
   if (error) return <p className="error-text">{error}</p>;
   if (sessions.length === 0) return (
     <div className="empty-state">
-      <p>No sessions recorded yet — go to Practice to record your first answer.</p>
+      <p>No sessions recorded yet.</p>
+      <Link to="/practice" className="button-link">Record your first answer</Link>
     </div>
   );
 
@@ -42,7 +45,7 @@ export function SessionHistoryList({ sessions, isLoading = false, error = "" }: 
             <span className="badge muted history-date">{formatDate(session.createdAtUtc)}</span>
           </div>
           <p className="history-meta">
-            Duration: {formatDuration(session.durationSeconds)} &bull; Filler words: {session.feedback.fillerWordCount} &bull; Pacing: {session.feedback.pacingLabel} &bull; {session.feedback.wordsPerMinuteEstimate} WPM
+            Duration: {formatDuration(session.durationSeconds)} &bull; Filler words: {session.feedback.fillerWordCount} &bull; Pacing: {session.feedback.pacingLabel} &bull; {session.feedback.wordsPerMinuteEstimate} WPM &bull; Score: <strong>{confidenceScore(session.feedback.wordsPerMinuteEstimate, session.feedback.fillerWordCount)}/100</strong>
           </p>
           <p className="history-transcript">
             {session.transcriptText.length > 180
