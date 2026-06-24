@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import type { Prompt } from "../../prompts/types/prompt";
 import { useRecorder } from "../hooks/useRecorder";
 import { transcribeAudioFallback } from "../../transcript/services/transcriptionApi";
@@ -125,12 +126,24 @@ export function RecordingPanel({ selectedPrompt }: Props) {
     setSaveState("idle");
   }
 
+  const statusLabel: Record<string, string> = {
+    idle: "Ready to record",
+    recording: "Recording in progress",
+    processing: "Processing transcript...",
+    done: "Recording complete",
+    error: "Recording error",
+  };
+
+  const formattedDuration = durationSeconds < 60
+    ? `${durationSeconds}s`
+    : `${Math.floor(durationSeconds / 60)}m ${durationSeconds % 60}s`;
+
   return (
     <div className="stack-sm">
       <div className="recording-status-card">
-        <p><strong>Prompt:</strong> {selectedPrompt ? selectedPrompt.title : "Select a prompt first"}</p>
-        <p><strong>Status:</strong> {recordingState}</p>
-        <p><strong>Duration:</strong> {durationSeconds}s</p>
+        <p><strong>Prompt:</strong> {selectedPrompt ? selectedPrompt.title : "Select a prompt above first"}</p>
+        <p><strong>Status:</strong> {statusLabel[recordingState] ?? recordingState}</p>
+        {durationSeconds > 0 && <p><strong>Duration:</strong> {formattedDuration}</p>}
       </div>
 
       <div className="row wrap">
@@ -138,7 +151,7 @@ export function RecordingPanel({ selectedPrompt }: Props) {
           {recordingState === "recording" ? "Recording..." : "Start recording"}
         </button>
         <button type="button" onClick={handleStop} disabled={!canStop}>
-          Stop recording
+          Stop &amp; analyze
         </button>
         <button type="button" onClick={handleReset}>
           Reset
@@ -182,6 +195,9 @@ export function RecordingPanel({ selectedPrompt }: Props) {
               ? "Saved to history"
               : "Save session"}
           </button>
+          {saveState === "saved" && (
+            <Link to="/history" className="button-link">View in History</Link>
+          )}
           {saveError && <p className="error-text">{saveError}</p>}
         </div>
       )}
