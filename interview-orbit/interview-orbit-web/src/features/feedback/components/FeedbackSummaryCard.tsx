@@ -37,6 +37,12 @@ function scoreClass(score: number): string {
   return "metric-bad";
 }
 
+function scoreLabel(score: number): string {
+  if (score >= 80) return "Strong";
+  if (score >= 50) return "Developing";
+  return "Needs work";
+}
+
 export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }: Props) {
   if (isLoading) return <div className="processing-box">Analyzing transcript...</div>;
   if (error) return <p className="error-text">{error}</p>;
@@ -54,6 +60,8 @@ export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }:
             <div className={`confidence-bar-fill ${scoreClass(score)}`} style={{ width: `${score}%` }} />
           </div>
         </div>
+        <p className={`score-label ${scoreClass(score)}`}>{scoreLabel(score)}</p>
+        <p className="metric-hint">Based on speaking pace (ideal: 120–160 WPM) and filler word count</p>
       </div>
       <div className="grid two">
         <div className="section-card">
@@ -61,6 +69,7 @@ export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }:
           <p className={`metric-value ${fillerClass(feedback.fillerWordCount)}`}>
             {feedback.fillerWordCount}
           </p>
+          <p className="metric-hint">um, uh, like, you know, so, actually</p>
         </div>
         <div className="section-card">
           <h3>Pacing</h3>
@@ -68,6 +77,7 @@ export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }:
             {feedback.pacingLabel}
           </p>
           <p className="metric-sub">{feedback.wordsPerMinuteEstimate} WPM</p>
+          <p className="metric-hint">Balanced = 120–160 WPM</p>
         </div>
       </div>
       <div className="section-card">
