@@ -158,7 +158,13 @@ export function RecordingPanel({ selectedPrompt }: Props) {
         </button>
       </div>
 
-      {errorMessage && <p className="error-text">{errorMessage}</p>}
+      {errorMessage && (
+        <p className="error-text">
+          {errorMessage.toLowerCase().includes("permission") || errorMessage.toLowerCase().includes("denied")
+            ? "Microphone access was denied. In Chrome: click the lock icon in the address bar → allow microphone → refresh."
+            : errorMessage}
+        </p>
+      )}
       {transcriptError && <p className="error-text">{transcriptError}</p>}
 
       {audioUrl && (
