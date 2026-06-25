@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { SkeletonCard } from "../../../components/SkeletonCard";
 import { confidenceScore } from "../../feedback/components/FeedbackSummaryCard";
 import type { InterviewSession } from "../types/session";
 
@@ -25,7 +26,12 @@ function formatDate(utcString: string): string {
 }
 
 export function SessionHistoryList({ sessions, isLoading = false, error = "" }: Props) {
-  if (isLoading) return <div className="processing-box">Loading session history...</div>;
+  if (isLoading) return (
+    <div className="stack-sm">
+      <SkeletonCard lines={3} />
+      <SkeletonCard lines={3} />
+    </div>
+  );
   if (error) return <p className="error-text">{error}</p>;
   if (sessions.length === 0) return (
     <div className="empty-state">

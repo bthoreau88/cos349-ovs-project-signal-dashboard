@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import type { PropsWithChildren } from "react";
+import { AppFooter } from "../../components/AppFooter";
 
 export function AppShell({ children }: PropsWithChildren) {
   return (
@@ -16,6 +17,7 @@ export function AppShell({ children }: PropsWithChildren) {
         </nav>
       </header>
       <main className="app-main">{children}</main>
+      <AppFooter />
     </div>
   );
 }

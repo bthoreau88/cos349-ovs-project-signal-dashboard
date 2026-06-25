@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { SectionCard } from "../components/SectionCard";
+import { SkeletonCard } from "../components/SkeletonCard";
 import { SessionTrendCards } from "../features/sessions/components/SessionTrendCards";
 import { getSessionTrends } from "../features/sessions/services/sessionsApi";
 import type { SessionTrend } from "../features/sessions/types/session";
@@ -28,13 +29,15 @@ export function DashboardPage() {
       />
       <div className="stack">
         <SectionCard title="Your progress">
-          {isEmpty ? (
+          {loading ? (
+            <SkeletonCard lines={4} />
+          ) : isEmpty ? (
             <div className="empty-state">
               <p>No sessions yet — record your first answer to start tracking progress.</p>
               <Link to="/practice" className="button-link">Start practicing</Link>
             </div>
           ) : (
-            <SessionTrendCards trend={trend} isLoading={loading} error={error} />
+            <SessionTrendCards trend={trend} isLoading={false} error={error} />
           )}
         </SectionCard>
         {!isEmpty && !loading && (
