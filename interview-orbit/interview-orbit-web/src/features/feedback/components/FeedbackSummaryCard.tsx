@@ -61,7 +61,13 @@ export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }:
           </div>
         </div>
         <p className={`score-label ${scoreClass(score)}`}>{scoreLabel(score)}</p>
-        <p className="metric-hint">Based on speaking pace (ideal: 120–160 WPM) and filler word count</p>
+        <details className="score-details">
+          <summary className="metric-hint">How is this calculated?</summary>
+          <ul className="score-formula">
+            <li>Pace (up to 50 pts): 120–160 WPM = 50, near range = 40, far = 25, very slow/fast = 10</li>
+            <li>Filler words (up to 50 pts): 0–2 = 50, 3–5 = 30, 6+ = 10</li>
+          </ul>
+        </details>
       </div>
       <div className="grid two">
         <div className="section-card">

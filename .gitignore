@@ -1,4 +1,12 @@
 node_modules/
+bin/
+obj/
+.vs/
 dist/
-.vite/
-*.local
+*.tsbuildinfo
+
+# SQLite database is generated/seeded at runtime, not committed
+*.db
+*.db-shm
+*.db-wal
+*.sqbpro

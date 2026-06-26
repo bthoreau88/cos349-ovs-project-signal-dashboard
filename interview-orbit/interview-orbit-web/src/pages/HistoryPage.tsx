@@ -26,11 +26,18 @@ export function HistoryPage() {
       .finally(() => setLoadingTrends(false));
   }, []);
 
+  const sessionCount = sessions.length;
+  const countLabel = loadingSessions
+    ? "Loading…"
+    : sessionCount === 0
+    ? "No sessions yet"
+    : `${sessionCount} session${sessionCount !== 1 ? "s" : ""} recorded`;
+
   return (
     <>
       <PageHeader
         title="History"
-        subtitle="Review saved mock interview answers and lightweight trends."
+        subtitle={`Review saved mock interview answers and trends. ${countLabel}.`}
       />
       <div className="stack">
         <SectionCard title="Trend summary">
