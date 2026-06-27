@@ -56,7 +56,14 @@ export function FeedbackSummaryCard({ feedback, isLoading = false, error = "" }:
         <h3>Confidence score</h3>
         <div className="confidence-row">
           <span className={`confidence-score ${scoreClass(score)}`}>{score}<span className="confidence-denom">/100</span></span>
-          <div className="confidence-bar-track">
+          <div
+            className="confidence-bar-track"
+            role="progressbar"
+            aria-valuenow={score}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Confidence score: ${score} out of 100`}
+          >
             <div className={`confidence-bar-fill ${scoreClass(score)}`} style={{ width: `${score}%` }} />
           </div>
         </div>
