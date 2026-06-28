@@ -46,6 +46,10 @@ export function DashboardPage() {
             <Link to="/practice" className="button-link">New session</Link>
           </SectionCard>
         )}
+        <SectionCard title="Practice library">
+          <p>16 prompts across 4 categories: Behavioral, Technical, Frontend, and General.</p>
+          <Link to="/practice" className="button-link">Browse prompts</Link>
+        </SectionCard>
       </div>
     </>
   );
